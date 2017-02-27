@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: pro.beam:api:3.0.3-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pro.beam/api/3.0.3-SNAPSHOT/9b4491f0f54c6ddff325423e4f1a1d67c2d9b60f/api-3.0.3-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pro.beam/api/3.0.3-SNAPSHOT/d4d012331ba6040db96116bde620f82d54c2f966/api-3.0.3-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
