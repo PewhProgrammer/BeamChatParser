@@ -20,15 +20,20 @@ import java.util.concurrent.ExecutionException;
 
 public class main {
 
+    public static int tokenCount;
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+
+        tokenCount = 0 ;
         BeamAPI beam = new BeamAPI("IlIBO49aTNglsEkhvhLwTsUbHW8j7gKZXtEE8sCQC0boEkjg2CSaLTHUByVDrqFo");
 
         BeamUser user = beam.use(UsersService.class).getCurrent().get();
-        BeamChat chat = beam.use(ChatService.class).findOne(user.channel.id).get();
+        BeamChat chat = beam.use(ChatService.class).findOne(657439).get();
+        BeamUser channelUser = beam.use(UsersService.class).search("hci_livestreaming").get().get(0);
         BeamChatConnectable chatConnectable = chat.connectable(beam);
 
         if (chatConnectable.connect()) {
-            chatConnectable.send(AuthenticateMessage.from(user.channel, user, chat.authkey), new ReplyHandler<AuthenticationReply>() {
+            chatConnectable.send(AuthenticateMessage.from(channelUser.channel, user, chat.authkey), new ReplyHandler<AuthenticationReply>() {
                 public void onSuccess(AuthenticationReply reply) {
                     chatConnectable.send(ChatSendMethod.of("Hello World!"));
                     System.out.print("Successfully connected!");
@@ -41,13 +46,34 @@ public class main {
 
         chatConnectable.on(UserJoinEvent.class, event -> {
             chatConnectable.send(ChatSendMethod.of(
-                    String.format("Hi %s! I'm pingbot! Write !ping and I will pong back!",
+                    String.format("Hi %s! I'm pewhBot! I'm ready to fetch some Tokens!",
                             event.data.username)));
         });
 
         chatConnectable.on(IncomingMessageEvent.class, event -> {
-            if (event.data.message.message.get(0).text.startsWith("!ping")) {
-                chatConnectable.send(ChatSendMethod.of(String.format("@%s PONG!",event.data.userName)));
+            if (event.data.message.message.get(0).text.startsWith("!LivestreamingMeetsHCI")
+                    && (event.data.userId == channelUser.id)) {
+
+                String message = event.data.message.message.get(0).text ;
+                StringBuffer target = new StringBuffer(message);
+                target.replace( 0 ,23 ,"");
+                String[] Tokens = target.toString().split(";");
+                //chatConnectable.send(ChatSendMethod.of(String.format("Ping! %d tokens detected from %s",Tokens.length,event.data.userName)));
+                for(String s:Tokens){
+                    if(s.equals("NexXw5")) {
+                        tokenCount++;
+                        chatConnectable.send(ChatSendMethod.of(String.format("Ping! I found my token!!")));
+                        continue;
+                    }
+                }
+            }
+            if (event.data.userName.contentEquals("pewhTV")) {
+                if(event.data.message.message.get(0).text.startsWith("!print"))
+                chatConnectable.send(ChatSendMethod.of(String.format("Ping! I've counted %d occurences on beam",tokenCount)));
+                if(event.data.message.message.get(0).text.startsWith("!shutdown")){
+                    chatConnectable.send(ChatSendMethod.of(String.format("Ping! I'm going offline now!")));
+                    System.exit(1);
+                }
             }
         });
 
